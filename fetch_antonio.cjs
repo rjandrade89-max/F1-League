@@ -1,8 +1,7 @@
 const https = require('https');
 
 const urls = [
-  'https://ibb.co/gLRVj4Tx',
-  'https://ibb.co/3ym4dBT5'
+  'https://ibb.co/VcrxGDkC'
 ];
 
 async function fetchDirectLink(url) {
