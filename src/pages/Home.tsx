@@ -1,26 +1,57 @@
-import { Play, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { Play, Upload, X } from 'lucide-react';
+
+interface NewsItem {
+  id: number;
+  title: string;
+  type: string;
+  img: string;
+  content: string;
+  date: string;
+}
+
+const heroNews: NewsItem = {
+  id: 0,
+  title: "Vitória Épica de Bruno Queirós!",
+  type: "Destaque",
+  img: "https://i.ibb.co/LdzP50MP/Bqueiros-vencedor.png",
+  content: "O piloto da Scuderia Ferrari conquistou o lugar mais alto do pódio numa corrida cheia de emoção e ultrapassagens no limite. Numa demonstração de pura habilidade, Bruno Queirós conseguiu segurar a pressão dos adversários nas últimas voltas, garantindo pontos cruciais para a equipa italiana no campeonato de construtores.",
+  date: "Hoje"
+};
+
+const newsGrid: NewsItem[] = [
+  { id: 1, title: "Gonçalo Queirós focado no campeonato", type: "Entrevista", img: "https://i.ibb.co/SwKxmP14/Gqueiros-helmet.png", content: "Em entrevista exclusiva, o piloto da Mercedes revelou que a equipa encontrou um bom setup para as próximas corridas. 'Estamos confiantes, o carro está a responder bem e o objetivo é o título', afirmou Gonçalo.", date: "Ontem" },
+  { id: 2, title: "O terrível acidente de Bruno Queirós", type: "Vídeo", img: "https://i.ibb.co/TMWDbDDF/bqueiros-acidente.png", content: "Reveja o momento de tensão na curva 4, onde Bruno Queirós perdeu o controlo do seu monolugar. Felizmente, o piloto saiu ileso, mas o carro sofreu danos significativos.", date: "Há 2 dias" },
+  { id: 3, title: "Gonçalo Santos mostra o seu novo capacete", type: "Social", img: "https://i.ibb.co/C3Gd2chL/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-sem-fundo-a-segurar-no-cap.png", content: "O piloto da Red Bull Racing partilhou nas redes sociais o design do seu novo capacete para esta temporada, com cores vibrantes e um design agressivo que promete dar nas vistas.", date: "Há 3 dias" },
+  { id: 4, title: "Bernardo Carvalho estreia-se pela McLaren", type: "Artigo", img: "https://i.ibb.co/kVM3FQzh/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-com-fundo-branco-sem-moldu.png", content: "A mais recente contratação da McLaren, Bernardo Carvalho, já veste as cores da equipa britânica. O piloto mostrou-se entusiasmado com o novo desafio e espera trazer bons resultados já na próxima corrida.", date: "Há 4 dias" },
+];
 
 export const Home = () => {
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 relative">
       {/* Hero Section */}
-      <section className="relative w-full h-[60vh] min-h-[400px] rounded-2xl overflow-hidden group cursor-pointer">
+      <section 
+        className="relative w-full h-[60vh] min-h-[400px] rounded-2xl overflow-hidden group cursor-pointer"
+        onClick={() => setSelectedNews(heroNews)}
+      >
         <div className="absolute inset-0 bg-black/40 z-10 group-hover:bg-black/20 transition-colors duration-500" />
         <img 
-          src="https://i.ibb.co/LdzP50MP/Bqueiros-vencedor.png" 
+          src={heroNews.img} 
           alt="Bruno Queirós Vencedor" 
-          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-top"
+          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-[center_35%]"
           referrerPolicy="no-referrer"
         />
         <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full bg-gradient-to-t from-[#121212] via-[#121212]/80 to-transparent">
           <div className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-black bg-neon-cyan rounded-sm uppercase">
-            Destaque
+            {heroNews.type}
           </div>
           <h1 className="text-4xl md:text-6xl font-display font-black italic uppercase leading-tight mb-4 text-white drop-shadow-lg">
             Vitória Épica de <br/>Bruno Queirós!
           </h1>
-          <p className="text-gray-300 max-w-2xl text-lg">
-            O piloto da Red Bull Racing conquistou o lugar mais alto do pódio numa corrida cheia de emoção e ultrapassagens no limite.
+          <p className="text-gray-300 max-w-2xl text-lg line-clamp-2">
+            {heroNews.content}
           </p>
         </div>
       </section>
@@ -45,18 +76,17 @@ export const Home = () => {
           Últimas Notícias
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { id: 1, title: "Gonçalo Queirós focado no campeonato", type: "Entrevista", img: "https://i.ibb.co/SwKxmP14/Gqueiros-helmet.png" },
-            { id: 2, title: "O terrível acidente de Bruno Queirós", type: "Vídeo", img: "https://i.ibb.co/TMWDbDDF/bqueiros-acidente.png" },
-            { id: 3, title: "Gonçalo Santos mostra o seu novo capacete", type: "Social", img: "https://i.ibb.co/C3Gd2chL/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-sem-fundo-a-segurar-no-cap.png" },
-            { id: 4, title: "Bruno Queirós pronto para a próxima", type: "Artigo", img: "https://i.ibb.co/PsVLsq22/bqueiros-helmet.png" },
-          ].map((news) => (
-            <article key={news.id} className="glass-panel rounded-xl overflow-hidden group cursor-pointer hover:border-white/30 transition-colors">
-              <div className="relative h-48 overflow-hidden">
+          {newsGrid.map((news) => (
+            <article 
+              key={news.id} 
+              onClick={() => setSelectedNews(news)}
+              className="glass-panel rounded-xl overflow-hidden group cursor-pointer hover:border-white/30 transition-colors flex flex-col"
+            >
+              <div className="relative h-48 overflow-hidden shrink-0">
                 <img 
                   src={news.img} 
                   alt={news.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 object-top"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 object-[center_20%]"
                   referrerPolicy="no-referrer"
                 />
                 {news.type === 'Vídeo' && (
@@ -67,14 +97,66 @@ export const Home = () => {
                   </div>
                 )}
               </div>
-              <div className="p-5">
+              <div className="p-5 flex-1 flex flex-col">
                 <span className="text-xs font-bold text-neon-cyan uppercase tracking-wider mb-2 block">{news.type}</span>
-                <h3 className="font-display font-bold text-lg leading-tight group-hover:text-neon-cyan transition-colors">{news.title}</h3>
+                <h3 className="font-display font-bold text-lg leading-tight group-hover:text-neon-cyan transition-colors mb-2">{news.title}</h3>
+                <p className="text-sm text-gray-400 line-clamp-2 mt-auto">{news.content}</p>
               </div>
             </article>
           ))}
         </div>
       </section>
+
+      {/* News Modal */}
+      {selectedNews && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedNews(null)} />
+          <div className="glass-panel w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden relative z-10 animate-in zoom-in-95 duration-200 border border-white/20 shadow-2xl">
+            
+            <div className="relative h-64 md:h-80 shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent z-10" />
+              <img 
+                src={selectedNews.img} 
+                alt={selectedNews.title} 
+                className="w-full h-full object-cover object-[center_30%]"
+                referrerPolicy="no-referrer"
+              />
+              <button 
+                onClick={() => setSelectedNews(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-30"
+              >
+                <X size={20} />
+              </button>
+              {selectedNews.type === 'Vídeo' && (
+                <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                  <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-white">
+                    <Play className="w-8 h-8 ml-2" fill="currentColor" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-8 bg-[#121212] overflow-y-auto custom-scrollbar">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="px-3 py-1 text-xs font-bold tracking-wider text-black bg-neon-cyan rounded-sm uppercase">
+                  {selectedNews.type}
+                </span>
+                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">
+                  {selectedNews.date}
+                </span>
+              </div>
+              <h2 className="font-display font-black italic text-3xl md:text-4xl uppercase mb-6 leading-tight">
+                {selectedNews.title}
+              </h2>
+              <div className="prose prose-invert max-w-none">
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  {selectedNews.content}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
