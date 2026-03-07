@@ -24,6 +24,7 @@ export interface SessionResult {
   laps?: number;
   points?: number;
   status?: string; // e.g., 'DNF'
+  fastestLap?: string;
 }
 
 export interface RaceWeekend {
@@ -34,24 +35,24 @@ export interface RaceWeekend {
 }
 
 export const teams: Team[] = [
-  { id: 'mercedes', name: 'Mercedes-AMG', color: '#00D2BE', logo: 'https://picsum.photos/seed/merc/100/100', carImage: 'https://picsum.photos/seed/car-merc/600/300' },
-  { id: 'redbull', name: 'Red Bull Racing', color: '#0600EF', logo: 'https://picsum.photos/seed/rb/100/100', carImage: 'https://picsum.photos/seed/car-rb/600/300' },
-  { id: 'ferrari', name: 'Scuderia Ferrari', color: '#DC0000', logo: 'https://picsum.photos/seed/fer/100/100', carImage: 'https://picsum.photos/seed/car-fer/600/300' },
-  { id: 'mclaren', name: 'McLaren', color: '#FF8700', logo: 'https://picsum.photos/seed/mcl/100/100', carImage: 'https://picsum.photos/seed/car-mcl/600/300' },
-  { id: 'aston', name: 'Aston Martin', color: '#006F62', logo: 'https://picsum.photos/seed/ast/100/100', carImage: 'https://picsum.photos/seed/car-ast/600/300' },
-  { id: 'alpine', name: 'Alpine', color: '#0090FF', logo: 'https://picsum.photos/seed/alp/100/100', carImage: 'https://picsum.photos/seed/car-alp/600/300' },
-  { id: 'williams', name: 'Williams', color: '#005AFF', logo: 'https://picsum.photos/seed/wil/100/100', carImage: 'https://picsum.photos/seed/car-wil/600/300' },
-  { id: 'vcarb', name: 'VCARB', color: '#6692FF', logo: 'https://picsum.photos/seed/vcarb/100/100', carImage: 'https://picsum.photos/seed/car-vcarb/600/300' },
-  { id: 'sauber', name: 'Kick Sauber', color: '#52E252', logo: 'https://picsum.photos/seed/sau/100/100', carImage: 'https://picsum.photos/seed/car-sau/600/300' },
-  { id: 'haas', name: 'Haas F1 Team', color: '#FFFFFF', logo: 'https://picsum.photos/seed/haas/100/100', carImage: 'https://picsum.photos/seed/car-haas/600/300' },
-  { id: 'porsche', name: 'Porsche Penske', color: '#D5001C', logo: 'https://picsum.photos/seed/por/100/100', carImage: 'https://picsum.photos/seed/car-por/600/300' },
+  { id: 'mercedes', name: 'Mercedes-AMG', color: '#00D2BE', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1024px-Mercedes-Logo.svg.png', carImage: 'https://picsum.photos/seed/car-merc/600/300' },
+  { id: 'redbull', name: 'Red Bull Racing', color: '#0600EF', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_Racing_logo.svg/1200px-Red_Bull_Racing_logo.svg.png', carImage: 'https://picsum.photos/seed/car-rb/600/300' },
+  { id: 'ferrari', name: 'Scuderia Ferrari', color: '#DC0000', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c0/Scuderia_Ferrari_Logo.svg/1200px-Scuderia_Ferrari_Logo.svg.png', carImage: 'https://picsum.photos/seed/car-fer/600/300' },
+  { id: 'mclaren', name: 'McLaren', color: '#FF8700', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/6/66/McLaren_Racing_logo.svg/1200px-McLaren_Racing_logo.svg.png', carImage: 'https://picsum.photos/seed/car-mcl/600/300' },
+  { id: 'aston', name: 'Aston Martin', color: '#006F62', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/2/26/Aston_Martin_Aramco_Cognizant_F1.svg/1200px-Aston_Martin_Aramco_Cognizant_F1.svg.png', carImage: 'https://picsum.photos/seed/car-ast/600/300' },
+  { id: 'alpine', name: 'Alpine', color: '#0090FF', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Alpine_F1_Team_Logo.svg/1200px-Alpine_F1_Team_Logo.svg.png', carImage: 'https://picsum.photos/seed/car-alp/600/300' },
+  { id: 'williams', name: 'Williams', color: '#005AFF', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Williams_Racing_2020_logo.svg/1200px-Williams_Racing_2020_logo.svg.png', carImage: 'https://picsum.photos/seed/car-wil/600/300' },
+  { id: 'vcarb', name: 'VCARB', color: '#6692FF', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/2/29/Visa_Cash_App_RB_logo.svg/1200px-Visa_Cash_App_RB_logo.svg.png', carImage: 'https://picsum.photos/seed/car-vcarb/600/300' },
+  { id: 'sauber', name: 'Kick Sauber', color: '#52E252', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Sauber_F1_Team_Logo.svg/1200px-Sauber_F1_Team_Logo.svg.png', carImage: 'https://picsum.photos/seed/car-sau/600/300' },
+  { id: 'haas', name: 'Haas F1 Team', color: '#FFFFFF', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Haas_F1_Team_logo.svg/1200px-Haas_F1_Team_logo.svg.png', carImage: 'https://picsum.photos/seed/car-haas/600/300' },
+  { id: 'porsche', name: 'Porsche Penske', color: '#D5001C', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Porsche_logo.svg/1200px-Porsche_logo.svg.png', carImage: 'https://picsum.photos/seed/car-por/600/300' },
 ];
 
 export const drivers: Driver[] = [
-  { id: 'd1', name: 'Gonçalo Queirós', shortName: 'G. QUE', isHuman: true, teamId: 'mercedes', points: 125, image: 'https://i.ibb.co/x8JpW3Y2/rafael-cinteiro.png' },
+  { id: 'd1', name: 'Rafael Queirós', shortName: 'R. QUE', isHuman: true, teamId: 'mercedes', points: 125, image: 'https://i.ibb.co/x8JpW3Y2/rafael-cinteiro.png' },
   { id: 'd2', name: 'Bruno Queirós', shortName: 'B. QUE', isHuman: true, teamId: 'ferrari', points: 110, image: 'https://i.ibb.co/5g3bggPP/brunocinteiro.png' },
-  { id: 'd3', name: 'Gonçalo Santos', shortName: 'G. SAN', isHuman: true, teamId: 'redbull', points: 95, image: 'https://i.ibb.co/Wv8FDKsV/caninca-cinteiro.png' },
-  { id: 'd4', name: 'António Queirós', shortName: 'A. QUE', isHuman: true, teamId: 'aston', points: 82, image: 'https://picsum.photos/seed/aqueiros/200/200' },
+  { id: 'd3', name: 'Gonçalo Garcez', shortName: 'G. GAR', isHuman: true, teamId: 'redbull', points: 95, image: 'https://i.ibb.co/Wv8FDKsV/caninca-cinteiro.png' },
+  { id: 'd4', name: 'António Queirós', shortName: 'A. QUE', isHuman: true, teamId: 'aston', points: 82, image: 'https://i.ibb.co/mVc8DNq3/aqueiros-int.png' },
   { id: 'd5', name: 'Bernardo Carvalho', shortName: 'B. CAR', isHuman: true, teamId: 'mclaren', points: 75, image: 'https://i.ibb.co/kVM3FQzh/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-com-fundo-branco-sem-moldu.png' },
   { id: 'd6', name: 'Lewis Hamilton', shortName: 'L. HAM', isHuman: false, teamId: 'mercedes', points: 68, image: 'https://picsum.photos/seed/ham/200/200' },
   { id: 'd7', name: 'Max Verstappen', shortName: 'M. VER', isHuman: false, teamId: 'redbull', points: 140, image: 'https://picsum.photos/seed/ver/200/200' },
@@ -75,52 +76,52 @@ export const raceResults: RaceWeekend[] = [
   {
     raceId: 1, // Portugal
     practice: [
-      { pos: 1, driverId: 'd1', time: '1:18.452', laps: 24 },
-      { pos: 2, driverId: 'd2', time: '1:18.601', gap: '+0.149', laps: 22 },
-      { pos: 3, driverId: 'd3', time: '1:18.890', gap: '+0.438', laps: 25 },
-      { pos: 4, driverId: 'd7', time: '1:19.012', gap: '+0.560', laps: 20 },
-      { pos: 5, driverId: 'd5', time: '1:19.155', gap: '+0.703', laps: 21 },
+      { pos: 1, driverId: 'd1', time: '1:18.452', laps: 24, fastestLap: '1:18.452' },
+      { pos: 2, driverId: 'd2', time: '1:18.601', gap: '+0.149', laps: 22, fastestLap: '1:18.601' },
+      { pos: 3, driverId: 'd3', time: '1:18.890', gap: '+0.438', laps: 25, fastestLap: '1:18.890' },
+      { pos: 4, driverId: 'd7', time: '1:19.012', gap: '+0.560', laps: 20, fastestLap: '1:19.012' },
+      { pos: 5, driverId: 'd5', time: '1:19.155', gap: '+0.703', laps: 21, fastestLap: '1:19.155' },
     ],
     qualifying: [
-      { pos: 1, driverId: 'd2', time: '1:17.980', laps: 15 },
-      { pos: 2, driverId: 'd1', time: '1:18.045', gap: '+0.065', laps: 16 },
-      { pos: 3, driverId: 'd3', time: '1:18.210', gap: '+0.230', laps: 14 },
-      { pos: 4, driverId: 'd5', time: '1:18.400', gap: '+0.420', laps: 15 },
-      { pos: 5, driverId: 'd4', time: '1:18.550', gap: '+0.570', laps: 16 },
+      { pos: 1, driverId: 'd2', time: '1:17.980', laps: 15, fastestLap: '1:17.980' },
+      { pos: 2, driverId: 'd1', time: '1:18.045', gap: '+0.065', laps: 16, fastestLap: '1:18.045' },
+      { pos: 3, driverId: 'd3', time: '1:18.210', gap: '+0.230', laps: 14, fastestLap: '1:18.210' },
+      { pos: 4, driverId: 'd5', time: '1:18.400', gap: '+0.420', laps: 15, fastestLap: '1:18.400' },
+      { pos: 5, driverId: 'd4', time: '1:18.550', gap: '+0.570', laps: 16, fastestLap: '1:18.550' },
     ],
     race: [
-      { pos: 1, driverId: 'd2', time: '1:32:45.123', points: 25 },
-      { pos: 2, driverId: 'd1', gap: '+4.567', points: 18 },
-      { pos: 3, driverId: 'd3', gap: '+12.890', points: 15 },
-      { pos: 4, driverId: 'd5', gap: '+18.450', points: 12 },
-      { pos: 5, driverId: 'd7', gap: '+22.100', points: 10 },
-      { pos: 6, driverId: 'd4', gap: '+25.600', points: 8 },
-      { pos: 21, driverId: 'd8', status: 'DNF', points: 0 },
+      { pos: 1, driverId: 'd2', time: '1:32:45.123', points: 25, fastestLap: '1:19.001' },
+      { pos: 2, driverId: 'd1', gap: '+4.567', points: 18, fastestLap: '1:19.120' },
+      { pos: 3, driverId: 'd3', gap: '+12.890', points: 15, fastestLap: '1:19.340' },
+      { pos: 4, driverId: 'd5', gap: '+18.450', points: 12, fastestLap: '1:19.500' },
+      { pos: 5, driverId: 'd7', gap: '+22.100', points: 10, fastestLap: '1:19.650' },
+      { pos: 6, driverId: 'd4', gap: '+25.600', points: 8, fastestLap: '1:19.800' },
+      { pos: 21, driverId: 'd8', status: 'DNF', points: 0, fastestLap: '1:20.100' },
     ]
   },
   {
     raceId: 2, // Espanha
     practice: [
-      { pos: 1, driverId: 'd3', time: '1:14.220', laps: 28 },
-      { pos: 2, driverId: 'd1', time: '1:14.350', gap: '+0.130', laps: 26 },
-      { pos: 3, driverId: 'd2', time: '1:14.500', gap: '+0.280', laps: 24 },
-      { pos: 4, driverId: 'd4', time: '1:14.800', gap: '+0.580', laps: 25 },
-      { pos: 5, driverId: 'd5', time: '1:14.950', gap: '+0.730', laps: 22 },
+      { pos: 1, driverId: 'd3', time: '1:14.220', laps: 28, fastestLap: '1:14.220' },
+      { pos: 2, driverId: 'd1', time: '1:14.350', gap: '+0.130', laps: 26, fastestLap: '1:14.350' },
+      { pos: 3, driverId: 'd2', time: '1:14.500', gap: '+0.280', laps: 24, fastestLap: '1:14.500' },
+      { pos: 4, driverId: 'd4', time: '1:14.800', gap: '+0.580', laps: 25, fastestLap: '1:14.800' },
+      { pos: 5, driverId: 'd5', time: '1:14.950', gap: '+0.730', laps: 22, fastestLap: '1:14.950' },
     ],
     qualifying: [
-      { pos: 1, driverId: 'd1', time: '1:13.500', laps: 18 },
-      { pos: 2, driverId: 'd3', time: '1:13.650', gap: '+0.150', laps: 18 },
-      { pos: 3, driverId: 'd2', time: '1:13.800', gap: '+0.300', laps: 17 },
-      { pos: 4, driverId: 'd5', time: '1:14.100', gap: '+0.600', laps: 16 },
-      { pos: 5, driverId: 'd4', time: '1:14.250', gap: '+0.750', laps: 18 },
+      { pos: 1, driverId: 'd1', time: '1:13.500', laps: 18, fastestLap: '1:13.500' },
+      { pos: 2, driverId: 'd3', time: '1:13.650', gap: '+0.150', laps: 18, fastestLap: '1:13.650' },
+      { pos: 3, driverId: 'd2', time: '1:13.800', gap: '+0.300', laps: 17, fastestLap: '1:13.800' },
+      { pos: 4, driverId: 'd5', time: '1:14.100', gap: '+0.600', laps: 16, fastestLap: '1:14.100' },
+      { pos: 5, driverId: 'd4', time: '1:14.250', gap: '+0.750', laps: 18, fastestLap: '1:14.250' },
     ],
     race: [
-      { pos: 1, driverId: 'd1', time: '1:35:10.400', points: 25 },
-      { pos: 2, driverId: 'd3', gap: '+2.100', points: 18 },
-      { pos: 3, driverId: 'd5', gap: '+15.300', points: 15 },
-      { pos: 4, driverId: 'd4', gap: '+20.500', points: 12 },
-      { pos: 5, driverId: 'd7', gap: '+28.900', points: 10 },
-      { pos: 21, driverId: 'd2', status: 'DNF', points: 0 },
+      { pos: 1, driverId: 'd1', time: '1:35:10.400', points: 25, fastestLap: '1:15.000' },
+      { pos: 2, driverId: 'd3', gap: '+2.100', points: 18, fastestLap: '1:15.150' },
+      { pos: 3, driverId: 'd5', gap: '+15.300', points: 15, fastestLap: '1:15.400' },
+      { pos: 4, driverId: 'd4', gap: '+20.500', points: 12, fastestLap: '1:15.600' },
+      { pos: 5, driverId: 'd7', gap: '+28.900', points: 10, fastestLap: '1:15.800' },
+      { pos: 21, driverId: 'd2', status: 'DNF', points: 0, fastestLap: '1:16.000' },
     ]
   }
 ];

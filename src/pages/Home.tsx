@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Upload, X } from 'lucide-react';
+import { Play, Upload, X, TrendingUp } from 'lucide-react';
 
 interface NewsItem {
   id: number;
@@ -20,10 +20,18 @@ const heroNews: NewsItem = {
 };
 
 const newsGrid: NewsItem[] = [
-  { id: 1, title: "Gonçalo Queirós focado no campeonato", type: "Entrevista", img: "https://i.ibb.co/SwKxmP14/Gqueiros-helmet.png", content: "Em entrevista exclusiva, o piloto da Mercedes revelou que a equipa encontrou um bom setup para as próximas corridas. 'Estamos confiantes, o carro está a responder bem e o objetivo é o título', afirmou Gonçalo.", date: "Ontem" },
+  { id: 1, title: "António Queirós confiante para a época", type: "Entrevista", img: "https://i.ibb.co/rG2F04QK/aqueirosentrevista.png", content: "Em entrevista exclusiva, o piloto da Aston Martin revelou que a equipa encontrou um bom setup para as próximas corridas. 'Estamos confiantes, o carro está a responder bem e o objetivo é lutar pelos pódios', afirmou António.", date: "Ontem" },
   { id: 2, title: "O terrível acidente de Bruno Queirós", type: "Vídeo", img: "https://i.ibb.co/TMWDbDDF/bqueiros-acidente.png", content: "Reveja o momento de tensão na curva 4, onde Bruno Queirós perdeu o controlo do seu monolugar. Felizmente, o piloto saiu ileso, mas o carro sofreu danos significativos.", date: "Há 2 dias" },
-  { id: 3, title: "Gonçalo Santos mostra o seu novo capacete", type: "Social", img: "https://i.ibb.co/C3Gd2chL/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-sem-fundo-a-segurar-no-cap.png", content: "O piloto da Red Bull Racing partilhou nas redes sociais o design do seu novo capacete para esta temporada, com cores vibrantes e um design agressivo que promete dar nas vistas.", date: "Há 3 dias" },
+  { id: 3, title: "Gonçalo Garcez mostra o seu novo capacete", type: "Social", img: "https://i.ibb.co/C3Gd2chL/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-sem-fundo-a-segurar-no-cap.png", content: "O piloto da Red Bull Racing partilhou nas redes sociais o design do seu novo capacete para esta temporada, com cores vibrantes e um design agressivo que promete dar nas vistas.", date: "Há 3 dias" },
   { id: 4, title: "Bernardo Carvalho estreia-se pela McLaren", type: "Artigo", img: "https://i.ibb.co/kVM3FQzh/Firefly-Gemini-Flash-converte-este-homem-numa-foto-de-piloto-de-formula-1-com-fundo-branco-sem-moldu.png", content: "A mais recente contratação da McLaren, Bernardo Carvalho, já veste as cores da equipa britânica. O piloto mostrou-se entusiasmado com o novo desafio e espera trazer bons resultados já na próxima corrida.", date: "Há 4 dias" },
+];
+
+const favorites = [
+  { name: 'Bernardo Carvalho', prob: 45, color: '#FF8700' },
+  { name: 'Rafael Queirós', prob: 25, color: '#00D2BE' },
+  { name: 'António Queirós', prob: 12, color: '#006F62' },
+  { name: 'Bruno Queirós', prob: 10, color: '#DC0000' },
+  { name: 'Gonçalo Garcez', prob: 8, color: '#0600EF' },
 ];
 
 export const Home = () => {
@@ -69,43 +77,74 @@ export const Home = () => {
         </label>
       </section>
 
-      {/* News Grid */}
-      <section>
-        <h2 className="text-2xl font-display font-black italic uppercase mb-6 flex items-center">
-          <span className="w-2 h-6 bg-neon-cyan mr-3 rounded-sm"></span>
-          Últimas Notícias
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newsGrid.map((news) => (
-            <article 
-              key={news.id} 
-              onClick={() => setSelectedNews(news)}
-              className="glass-panel rounded-xl overflow-hidden group cursor-pointer hover:border-white/30 transition-colors flex flex-col"
-            >
-              <div className="relative h-48 overflow-hidden shrink-0">
-                <img 
-                  src={news.img} 
-                  alt={news.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 object-[center_20%]"
-                  referrerPolicy="no-referrer"
-                />
-                {news.type === 'Vídeo' && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 group-hover:bg-neon-cyan group-hover:text-black transition-colors">
-                      <Play className="w-5 h-5 ml-1" fill="currentColor" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* News Grid */}
+        <section className="lg:col-span-2">
+          <h2 className="text-2xl font-display font-black italic uppercase mb-6 flex items-center">
+            <span className="w-2 h-6 bg-neon-cyan mr-3 rounded-sm"></span>
+            Últimas Notícias
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {newsGrid.map((news) => (
+              <article 
+                key={news.id} 
+                onClick={() => setSelectedNews(news)}
+                className="glass-panel rounded-xl overflow-hidden group cursor-pointer hover:border-white/30 transition-colors flex flex-col"
+              >
+                <div className="relative h-48 overflow-hidden shrink-0">
+                  <img 
+                    src={news.img} 
+                    alt={news.title} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 object-[center_20%]"
+                    referrerPolicy="no-referrer"
+                  />
+                  {news.type === 'Vídeo' && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 group-hover:bg-neon-cyan group-hover:text-black transition-colors">
+                        <Play className="w-5 h-5 ml-1" fill="currentColor" />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                <div className="p-5 flex-1 flex flex-col">
+                  <span className="text-xs font-bold text-neon-cyan uppercase tracking-wider mb-2 block">{news.type}</span>
+                  <h3 className="font-display font-bold text-lg leading-tight group-hover:text-neon-cyan transition-colors mb-2">{news.title}</h3>
+                  <p className="text-sm text-gray-400 line-clamp-2 mt-auto">{news.content}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Favorites Sidebar */}
+        <section className="lg:col-span-1">
+          <h2 className="text-2xl font-display font-black italic uppercase mb-6 flex items-center">
+            <span className="w-2 h-6 bg-white mr-3 rounded-sm"></span>
+            Favoritos ao Título
+          </h2>
+          <div className="glass-panel rounded-xl p-6 space-y-6">
+            <div className="flex items-center gap-3 text-gray-400 mb-2">
+              <TrendingUp size={20} className="text-neon-cyan" />
+              <span className="text-sm font-bold uppercase tracking-wider">Probabilidade de Vitória</span>
+            </div>
+            
+            {favorites.map((fav, idx) => (
+              <div key={fav.name} className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <span className="font-bold text-sm">{idx + 1}. {fav.name}</span>
+                  <span className="font-mono font-bold text-neon-cyan">{fav.prob}%</span>
+                </div>
+                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${fav.prob}%`, backgroundColor: fav.color }}
+                  />
+                </div>
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <span className="text-xs font-bold text-neon-cyan uppercase tracking-wider mb-2 block">{news.type}</span>
-                <h3 className="font-display font-bold text-lg leading-tight group-hover:text-neon-cyan transition-colors mb-2">{news.title}</h3>
-                <p className="text-sm text-gray-400 line-clamp-2 mt-auto">{news.content}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* News Modal */}
       {selectedNews && (

@@ -47,8 +47,8 @@ export default function App() {
                 <Car className="text-black" size={24} />
               </div>
               <div className="flex flex-col">
-                <span className="font-display font-black italic text-xl leading-none tracking-wider uppercase">Sim Racing</span>
-                <span className="text-neon-cyan text-xs font-bold tracking-widest uppercase">League AMS2</span>
+                <span className="font-display font-black italic text-xl leading-none tracking-wider uppercase">Kel Racers</span>
+                <span className="text-neon-cyan text-xs font-bold tracking-widest uppercase">AMS2 "Pro" Racers</span>
               </div>
             </div>
 
@@ -122,7 +122,7 @@ export default function App() {
       <footer className="border-t border-white/10 bg-black/50 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-500 text-sm font-bold uppercase tracking-wider">
-            &copy; 2026 Sim Racing League AMS2. Todos os direitos reservados.
+            &copy; 2026 Kel Racers. Todos os direitos reservados.
           </p>
         </div>
       </footer>

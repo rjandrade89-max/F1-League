@@ -11,7 +11,7 @@ const races = [
     date: '10 Março 2026',
     status: 'completed',
     winner: 'Bruno Queirós',
-    image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800&auto=format&fit=crop'
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Algarve_International_Circuit.svg/1024px-Algarve_International_Circuit.svg.png'
   },
   {
     id: 2,
@@ -20,8 +20,8 @@ const races = [
     track: 'Circuit de Barcelona-Catalunya',
     date: '24 Março 2026',
     status: 'completed',
-    winner: 'Gonçalo Queirós',
-    image: 'https://images.unsplash.com/photo-1517026575980-3e1e2daf4ce7?q=80&w=800&auto=format&fit=crop'
+    winner: 'Rafael Queirós',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Catalunya.svg/1024px-Catalunya.svg.png'
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const races = [
     date: '07 Abril 2026',
     status: 'upcoming',
     winner: null,
-    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800&auto=format&fit=crop'
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Monte_Carlo_Formula_1_circuit_map.svg/1024px-Monte_Carlo_Formula_1_circuit_map.svg.png'
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const races = [
     date: '21 Abril 2026',
     status: 'upcoming',
     winner: null,
-    image: 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=800&auto=format&fit=crop'
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Circuit_Gilles_Villeneuve.svg/1024px-Circuit_Gilles_Villeneuve.svg.png'
   },
   {
     id: 5,
@@ -51,7 +51,7 @@ const races = [
     date: '05 Maio 2026',
     status: 'upcoming',
     winner: null,
-    image: 'https://images.unsplash.com/photo-1532983330958-4b32afceeaeb?q=80&w=800&auto=format&fit=crop'
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Silverstone_Circuit_2020.png/1024px-Silverstone_Circuit_2020.png'
   }
 ];
 
@@ -71,6 +71,7 @@ export const Calendario = () => {
               <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-12 text-center">Pos</th>
               <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Piloto</th>
               <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider hidden sm:table-cell">Equipa</th>
+              <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Melhor Volta</th>
               <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">{isRace ? 'Tempo/Gap' : 'Tempo'}</th>
               {!isRace && <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right hidden md:table-cell">Voltas</th>}
               {isRace && <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Pts</th>}
@@ -91,6 +92,7 @@ export const Calendario = () => {
                     </div>
                   </td>
                   <td className="p-3 text-sm text-gray-400 hidden sm:table-cell">{team?.name}</td>
+                  <td className="p-3 text-center font-mono text-sm text-purple-400">{result.fastestLap || '-'}</td>
                   <td className="p-3 text-right font-mono text-sm">
                     {result.status === 'DNF' ? (
                       <span className="text-red-500 font-bold">DNF</span>
@@ -127,14 +129,13 @@ export const Calendario = () => {
             }`}
           >
             {/* Image Section */}
-            <div className="w-full md:w-64 h-48 md:h-auto relative overflow-hidden">
+            <div className="w-full md:w-64 h-48 md:h-auto relative overflow-hidden bg-white/5 flex items-center justify-center p-4">
               <img 
                 src={race.image} 
                 alt={race.name} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="max-w-full max-h-full object-contain opacity-70 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#121212] to-transparent" />
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
                 Ronda {race.round}
               </div>
@@ -202,12 +203,12 @@ export const Calendario = () => {
           <div className="glass-panel w-full max-w-5xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden relative z-10 animate-in zoom-in-95 duration-200 border border-white/20 shadow-2xl">
             
             {/* Modal Header */}
-            <div className="relative h-48 shrink-0">
+            <div className="relative h-48 shrink-0 bg-white/5 flex items-center justify-center p-8">
               <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/60 to-transparent z-10" />
               <img 
                 src={selectedRaceInfo.image} 
                 alt={selectedRaceInfo.name} 
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-full object-contain opacity-40"
                 referrerPolicy="no-referrer"
               />
               <button 
