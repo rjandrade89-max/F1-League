@@ -1,4 +1,6 @@
-import { Calendar as CalendarIcon, MapPin, Flag, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Calendar as CalendarIcon, MapPin, Flag, ChevronRight, X, Clock, Trophy } from 'lucide-react';
+import { raceResults, drivers, teams, RaceWeekend, SessionResult } from '../data';
 
 const races = [
   {
@@ -54,8 +56,63 @@ const races = [
 ];
 
 export const Calendario = () => {
+  const [selectedRaceId, setSelectedRaceId] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'practice' | 'qualifying' | 'race'>('race');
+
+  const selectedRaceInfo = races.find(r => r.id === selectedRaceId);
+  const selectedRaceData = raceResults.find(r => r.raceId === selectedRaceId);
+
+  const renderSessionTable = (sessionData: SessionResult[], isRace: boolean = false) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-12 text-center">Pos</th>
+              <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Piloto</th>
+              <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider hidden sm:table-cell">Equipa</th>
+              <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">{isRace ? 'Tempo/Gap' : 'Tempo'}</th>
+              {!isRace && <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right hidden md:table-cell">Voltas</th>}
+              {isRace && <th className="p-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Pts</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {sessionData.map((result) => {
+              const driver = drivers.find(d => d.id === result.driverId);
+              const team = teams.find(t => t.id === driver?.teamId);
+              
+              return (
+                <tr key={result.driverId} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td className="p-3 text-center font-display font-bold italic text-gray-500">{result.pos}</td>
+                  <td className="p-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-6 rounded-full" style={{ backgroundColor: team?.color }} />
+                      <div className="font-bold">{driver?.name}</div>
+                    </div>
+                  </td>
+                  <td className="p-3 text-sm text-gray-400 hidden sm:table-cell">{team?.name}</td>
+                  <td className="p-3 text-right font-mono text-sm">
+                    {result.status === 'DNF' ? (
+                      <span className="text-red-500 font-bold">DNF</span>
+                    ) : (
+                      <span className={result.pos === 1 ? 'text-neon-cyan font-bold' : 'text-gray-300'}>
+                        {result.time || result.gap}
+                      </span>
+                    )}
+                  </td>
+                  {!isRace && <td className="p-3 text-right font-mono text-sm text-gray-400 hidden md:table-cell">{result.laps}</td>}
+                  {isRace && <td className="p-3 text-right font-mono font-bold text-neon-cyan">{result.points || 0}</td>}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 relative">
       <div>
         <h1 className="text-4xl font-display font-black italic uppercase mb-2">Calendário</h1>
         <p className="text-gray-400">Acompanha as corridas da temporada e os resultados.</p>
@@ -117,10 +174,17 @@ export const Calendario = () => {
                   </div>
                 )}
 
-                <button className={`flex items-center gap-2 font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-lg transition-colors ${
+                <button 
+                  onClick={() => {
+                    if (race.status === 'completed') {
+                      setSelectedRaceId(race.id);
+                      setActiveTab('race');
+                    }
+                  }}
+                  className={`flex items-center gap-2 font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-lg transition-colors ${
                   race.status === 'completed' 
-                    ? 'bg-white/5 hover:bg-white/10 text-white border border-white/10' 
-                    : 'bg-neon-cyan/10 hover:bg-neon-cyan text-neon-cyan hover:text-black border border-neon-cyan/30'
+                    ? 'bg-white/5 hover:bg-white/10 text-white border border-white/10 cursor-pointer' 
+                    : 'bg-neon-cyan/10 hover:bg-neon-cyan text-neon-cyan hover:text-black border border-neon-cyan/30 cursor-default'
                 }`}>
                   {race.status === 'completed' ? 'Ver Resultados' : 'Detalhes'}
                   <ChevronRight size={16} />
@@ -130,6 +194,65 @@ export const Calendario = () => {
           </div>
         ))}
       </div>
+
+      {/* Results Modal */}
+      {selectedRaceId && selectedRaceInfo && selectedRaceData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedRaceId(null)} />
+          <div className="glass-panel w-full max-w-5xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden relative z-10 animate-in zoom-in-95 duration-200 border border-white/20 shadow-2xl">
+            
+            {/* Modal Header */}
+            <div className="relative h-48 shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/60 to-transparent z-10" />
+              <img 
+                src={selectedRaceInfo.image} 
+                alt={selectedRaceInfo.name} 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+              <button 
+                onClick={() => setSelectedRaceId(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-30"
+              >
+                <X size={20} />
+              </button>
+              <div className="absolute bottom-6 left-6 z-20">
+                <div className="text-neon-cyan text-xs font-bold uppercase tracking-wider mb-1">Ronda {selectedRaceInfo.round}</div>
+                <h2 className="font-display font-black italic text-3xl md:text-4xl uppercase drop-shadow-lg">{selectedRaceInfo.name}</h2>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-white/10 bg-[#121212] shrink-0">
+              <button 
+                onClick={() => setActiveTab('practice')}
+                className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'practice' ? 'text-neon-cyan border-b-2 border-neon-cyan bg-white/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              >
+                <Clock size={16} /> Treinos Livres
+              </button>
+              <button 
+                onClick={() => setActiveTab('qualifying')}
+                className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'qualifying' ? 'text-neon-cyan border-b-2 border-neon-cyan bg-white/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              >
+                <Clock size={16} /> Qualificação
+              </button>
+              <button 
+                onClick={() => setActiveTab('race')}
+                className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'race' ? 'text-neon-cyan border-b-2 border-neon-cyan bg-white/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              >
+                <Trophy size={16} /> Corrida
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 bg-[#121212] overflow-y-auto flex-1 custom-scrollbar">
+              {activeTab === 'practice' && renderSessionTable(selectedRaceData.practice)}
+              {activeTab === 'qualifying' && renderSessionTable(selectedRaceData.qualifying)}
+              {activeTab === 'race' && renderSessionTable(selectedRaceData.race, true)}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
