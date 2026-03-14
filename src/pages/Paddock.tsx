@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { LogOut, Target, Weight, Car } from 'lucide-react';
+import { upgrades, Upgrade } from '../data';
 
 interface PilotoData {
   nome?: string;
@@ -19,6 +20,7 @@ export const Paddock = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [buyingUpgrade, setBuyingUpgrade] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -80,6 +82,52 @@ export const Paddock = () => {
       await signOut(auth);
     } catch (err) {
       console.error("Erro ao terminar sessão:", err);
+    }
+  };
+
+  const handleBuyUpgrade = async (upgrade: Upgrade) => {
+    if (!user || !pilotoData || pilotoData.creditos === undefined || pilotoData.pesoCarro === undefined) return;
+    
+    if (pilotoData.creditos < upgrade.price) {
+      alert("Créditos insuficientes para esta peça.");
+      return;
+    }
+
+    if (pilotoData.pesoCarro <= 0) {
+      alert("O teu carro já está no peso mínimo permitido pelo regulamento (0kg de Ballast).");
+      return;
+    }
+
+    const confirmPurchase = window.confirm(`Confirmas a compra de "${upgrade.name}" por ${upgrade.price.toLocaleString()} CR?\nIsto irá reduzir o teu peso em ${upgrade.weightReduction}kg na próxima corrida.`);
+    
+    if (!confirmPurchase) return;
+
+    setBuyingUpgrade(upgrade.id);
+
+    try {
+      const newCredits = pilotoData.creditos - upgrade.price;
+      // Ensure weight doesn't go below 0
+      const newWeight = Math.max(0, pilotoData.pesoCarro - upgrade.weightReduction);
+
+      const docRef = doc(db, 'pilotos', user.uid);
+      await updateDoc(docRef, {
+        creditos: newCredits,
+        pesoCarro: newWeight
+      });
+
+      // Update local state immediately for better UX
+      setPilotoData({
+        ...pilotoData,
+        creditos: newCredits,
+        pesoCarro: newWeight
+      });
+
+      alert(`Compra efetuada com sucesso! O teu novo peso extra é de ${newWeight}kg.`);
+    } catch (err) {
+      console.error("Erro ao comprar upgrade:", err);
+      alert("Erro de comunicação com a garagem. Tenta novamente.");
+    } finally {
+      setBuyingUpgrade(null);
     }
   };
 
@@ -201,7 +249,7 @@ export const Paddock = () => {
             <span className="text-xl font-bold text-red-400 uppercase">KG</span>
           </div>
           <div className="mt-4 w-full bg-black/50 h-2 rounded-full overflow-hidden">
-            <div className="bg-gradient-to-r from-yellow-500 to-red-500 h-full w-1/3"></div>
+            <div className="bg-gradient-to-r from-yellow-500 to-red-500 h-full" style={{ width: `${(Math.min(40, pilotoData?.pesoCarro || 0) / 40) * 100}%` }}></div>
           </div>
         </div>
 
@@ -224,6 +272,39 @@ export const Paddock = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Loja de Engenharia */}
+      <div className="glass-panel rounded-2xl p-6 mt-6">
+        <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+          <Car className="text-neon-cyan" size={24} />
+          <h3 className="font-display text-xl font-bold uppercase tracking-widest text-white">Loja de Engenharia</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {upgrades.map((upgrade) => (
+            <div key={upgrade.id} className="bg-black/40 border border-white/5 rounded-xl p-5 hover:border-neon-cyan/50 transition-colors group flex flex-col h-full">
+              <div className="flex justify-between items-start mb-3">
+                <h4 className="font-bold text-white text-sm uppercase tracking-wider pr-4">{upgrade.name}</h4>
+                <span className="text-neon-green font-mono font-bold text-sm shrink-0">{upgrade.price.toLocaleString()} CR</span>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-4 flex-grow">{upgrade.description}</p>
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                <div className="flex items-center gap-1 text-neon-cyan">
+                  <Weight size={14} />
+                  <span className="font-bold text-sm">-{upgrade.weightReduction} KG</span>
+                </div>
+                <button 
+                  onClick={() => handleBuyUpgrade(upgrade)}
+                  className="px-4 py-2 bg-white/5 hover:bg-neon-cyan hover:text-black text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={(pilotoData?.creditos || 0) < upgrade.price || (pilotoData?.pesoCarro || 0) <= 0 || buyingUpgrade === upgrade.id}
+                >
+                  {buyingUpgrade === upgrade.id ? 'A Instalar...' : 'Comprar'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

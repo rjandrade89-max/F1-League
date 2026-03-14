@@ -43,6 +43,58 @@ export interface Tier {
   popupMessage: string;
 }
 
+export interface Upgrade {
+  id: string;
+  name: string;
+  price: number;
+  weightReduction: number;
+  description: string;
+  icon: string;
+}
+
+export const upgrades: Upgrade[] = [
+  {
+    id: 'upg_bancos',
+    name: 'Bancos de Competição em Kevlar',
+    price: 1500,
+    weightReduction: 5,
+    description: 'Substituição dos pesados bancos de série por bacquets de competição em Kevlar. Melhora ligeiramente a distribuição de peso e o centro de gravidade no habitáculo.',
+    icon: 'seat' // Placeholder for icon name
+  },
+  {
+    id: 'upg_bateria',
+    name: 'Bateria de Lítio Ultraleve',
+    price: 2500,
+    weightReduction: 5,
+    description: 'Troca da bateria tradicional de chumbo-ácido por uma unidade compacta de iões de lítio. Reduz a massa na extremidade do chassis, diminuindo a inércia polar.',
+    icon: 'battery'
+  },
+  {
+    id: 'upg_jantes',
+    name: 'Jantes de Magnésio Forjado',
+    price: 4000,
+    weightReduction: 10,
+    description: 'Redução drástica da massa não suspensa. Melhora a resposta da suspensão, a aceleração e a eficiência de travagem devido à menor inércia rotacional.',
+    icon: 'wheel'
+  },
+  {
+    id: 'upg_escape',
+    name: 'Sistema de Escape em Titânio',
+    price: 5500,
+    weightReduction: 10,
+    description: 'Sistema de escape completo em liga de titânio aeroespacial. Para além da poupança de peso significativa na traseira, otimiza o fluxo de gases de escape.',
+    icon: 'exhaust'
+  },
+  {
+    id: 'upg_chassis',
+    name: 'Painéis de Carroçaria em Fibra de Carbono',
+    price: 8000,
+    weightReduction: 10,
+    description: 'Substituição do capô, tejadilho e portas por compostos de fibra de carbono pré-impregnada (pre-preg). A derradeira redução de peso, baixando drasticamente o centro de gravidade.',
+    icon: 'car'
+  }
+];
+
 export const tiers: Tier[] = [
   {
     level: 1,
