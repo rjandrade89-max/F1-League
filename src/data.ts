@@ -34,6 +34,67 @@ export interface RaceWeekend {
   race: SessionResult[];
 }
 
+export interface Tier {
+  level: number;
+  name: string;
+  rpRequired: number;
+  cars: string[];
+  popupTitle: string;
+  popupMessage: string;
+}
+
+export const tiers: Tier[] = [
+  {
+    level: 1,
+    name: "Amadores de Fim de Semana",
+    rpRequired: 0,
+    cars: ["Formula Vee", "Copa Uno"],
+    popupTitle: "",
+    popupMessage: ""
+  },
+  {
+    level: 2,
+    name: "Pilotos de Clube",
+    rpRequired: 1500,
+    cars: ["Sprint Race", "Porsche Cayman GT4"],
+    popupTitle: "🏁 AS RODINHAS DE APOIO SAÍRAM!",
+    popupMessage: "O Paddock reparou em vocês. Os tempos de brincar com os Copa Uno acabaram. As equipas de Club Racing enviaram os contratos e os carros já estão nas boxes à vossa espera. Pneus slick, caixas sequenciais e cheiro a borracha queimada. Bem-vindos às corridas a sério, cavalheiros. O Tier 2 está desbloqueado!"
+  },
+  {
+    level: 3,
+    name: "Profissionais",
+    rpRequired: 6000,
+    cars: ["Mercedes AMG GT3", "Fórmula 3 Brasil"],
+    popupTitle: "🦅 VOO ALTO: BEM-VINDOS AOS PROFISSIONAIS!",
+    popupMessage: "A brincadeira acabou. Vocês provaram ser mais do que pilotos de domingo. Os patrocinadores abriram os cordões à bolsa e as chaves das bestas de GT3 e F3 estão nas vossas mãos. Preparem os pescoços para as Forças G e não se esqueçam de aquecer os travões. O Tier 3 está desbloqueado. Sobrevivam."
+  },
+  {
+    level: 4,
+    name: "O Pináculo",
+    rpRequired: 13500,
+    cars: ["Formula Ultimate Gen 2", "Formula V10 Gen 1"],
+    popupTitle: "👑 O PINÁCULO DO DESPORTO MOTORIZADO!",
+    popupMessage: "Gonçalo Q., Bruno, Gonçalo S., António e Bernardo... O mundo inteiro está a ver. Vocês chegaram ao topo da montanha. Milhares de cavalos de potência, engenharia aeroespacial e zero margem para erro. Vocês são a elite. Entrem nos vossos Fórmula 1 e façam história. O Tier 4 está oficialmente DESBLOQUEADO!"
+  }
+];
+
+export const getGroupRP = (driversList: Driver[]) => {
+  const humanPoints = driversList.filter(d => d.isHuman).reduce((sum, d) => sum + d.points, 0);
+  return humanPoints * 10; // 1 point = 10 RP
+};
+
+export const getCurrentTierInfo = (rp: number) => {
+  let current = tiers[0];
+  let next: Tier | null = tiers[1];
+  for (let i = 0; i < tiers.length; i++) {
+    if (rp >= tiers[i].rpRequired) {
+      current = tiers[i];
+      next = tiers[i + 1] || null;
+    }
+  }
+  return { current, next };
+};
+
 export const teams: Team[] = [
   { id: 'mercedes', name: 'Mercedes-AMG', color: '#00D2BE', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1024px-Mercedes-Logo.svg.png', carImage: 'https://picsum.photos/seed/car-merc/600/300' },
   { id: 'redbull', name: 'Red Bull Racing', color: '#0600EF', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_Racing_logo.svg/1200px-Red_Bull_Racing_logo.svg.png', carImage: 'https://picsum.photos/seed/car-rb/600/300' },

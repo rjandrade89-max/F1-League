@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trophy, Users, Car, Home as HomeIcon, Menu, X, Calendar } from 'lucide-react';
 import { Ticker } from './components/Ticker';
 import { Home } from './pages/Home';
@@ -6,12 +6,29 @@ import { Pilotos } from './pages/Pilotos';
 import { Equipas } from './pages/Equipas';
 import { Classificacoes } from './pages/Classificacoes';
 import { Calendario } from './pages/Calendario';
+import { Paddock } from './pages/Paddock';
+import { getGroupRP, getCurrentTierInfo, tiers, drivers } from './data';
+import { TierPopup } from './components/TierPopup';
+import { ShieldAlert } from 'lucide-react';
 
-type Page = 'home' | 'pilotos' | 'equipas' | 'classificacoes' | 'calendario';
+type Page = 'home' | 'pilotos' | 'equipas' | 'classificacoes' | 'calendario' | 'paddock';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showPopupForTier, setShowPopupForTier] = useState<number | null>(null);
+
+  const groupRP = getGroupRP(drivers);
+  const { current: currentTier, next: nextTier } = getCurrentTierInfo(groupRP);
+
+  useEffect(() => {
+    // Check if we need to show a popup
+    const savedTier = parseInt(localStorage.getItem('highestTierUnlocked') || '1', 10);
+    if (currentTier.level > savedTier) {
+      setShowPopupForTier(currentTier.level);
+      localStorage.setItem('highestTierUnlocked', currentTier.level.toString());
+    }
+  }, [currentTier.level]);
 
   const navItems = [
     { id: 'home', label: 'Home', icon: HomeIcon },
@@ -19,6 +36,7 @@ export default function App() {
     { id: 'equipas', label: 'Equipas', icon: Car },
     { id: 'calendario', label: 'Calendário', icon: Calendar },
     { id: 'classificacoes', label: 'Classificações', icon: Trophy },
+    { id: 'paddock', label: 'Paddock', icon: ShieldAlert },
   ] as const;
 
   const renderPage = () => {
@@ -28,6 +46,7 @@ export default function App() {
       case 'equipas': return <Equipas />;
       case 'calendario': return <Calendario />;
       case 'classificacoes': return <Classificacoes />;
+      case 'paddock': return <Paddock />;
       default: return <Home />;
     }
   };
@@ -72,9 +91,27 @@ export default function App() {
               })}
             </nav>
 
+            {/* Tier Progress Bar */}
+            <div className="hidden xl:flex items-center gap-4 pl-8 border-l border-white/10">
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Group RP</span>
+                <span className="text-neon-cyan font-mono font-bold text-sm">{groupRP.toLocaleString()}</span>
+              </div>
+              <div className="w-32 h-2 bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.8)]"
+                  style={{ width: nextTier ? `${Math.min(100, ((groupRP - currentTier.rpRequired) / (nextTier.rpRequired - currentTier.rpRequired)) * 100)}%` : '100%' }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tier {currentTier.level}</span>
+                <span className="text-white font-bold text-xs truncate max-w-[120px]">{currentTier.name}</span>
+              </div>
+            </div>
+
             {/* Mobile Menu Button */}
             <button 
-              className="md:hidden text-white p-2"
+              className="xl:hidden text-white p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -84,7 +121,27 @@ export default function App() {
 
         {/* Mobile Nav */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 bg-[#121212] absolute w-full">
+          <div className="xl:hidden border-t border-white/10 bg-[#121212] absolute w-full shadow-2xl">
+            {/* Mobile Tier Progress Bar */}
+            <div className="px-4 py-4 border-b border-white/5 bg-white/5">
+              <div className="flex justify-between items-end mb-2">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Group RP</span>
+                  <span className="text-neon-cyan font-mono font-bold text-sm">{groupRP.toLocaleString()}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tier {currentTier.level}</span>
+                  <span className="text-white font-bold text-xs">{currentTier.name}</span>
+                </div>
+              </div>
+              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.8)]"
+                  style={{ width: nextTier ? `${Math.min(100, ((groupRP - currentTier.rpRequired) / (nextTier.rpRequired - currentTier.rpRequired)) * 100)}%` : '100%' }}
+                />
+              </div>
+            </div>
+
             <div className="px-4 pt-2 pb-4 space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -126,6 +183,14 @@ export default function App() {
           </p>
         </div>
       </footer>
+
+      {/* Tier Popup */}
+      {showPopupForTier && (
+        <TierPopup 
+          tier={tiers.find(t => t.level === showPopupForTier)!} 
+          onClose={() => setShowPopupForTier(null)} 
+        />
+      )}
     </div>
   );
 }
